@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -61,10 +62,10 @@ public class PdfFileParser implements FileParser {
 	}
 
 	@Override
-	public Map<Integer, String> countWords() {
+	public MapCounter countWords() {
 		InputStream input = null;
-		List<String> sentences = new ArrayList<>();
-		Map<Integer,String> countedWords = new HashMap<>();
+		Stream<String[]> words = null;
+		MapCounter countedWords = MapCounter.of();
 		try{
 			
 			input = new FileInputStream(fileLocation);
@@ -78,12 +79,13 @@ public class PdfFileParser implements FileParser {
             parser.parse(input,handler,metadata,parserContext);
             
             String extractedText = handler.toString().replaceAll("\n|\r|\t"," ");
-
+            Arrays.stream(extractedText.split("\\.")).forEach(s -> countedWords.addSentence(s));
+            return countedWords;
 			
 		}catch(Exception e){
-			
+			 e.printStackTrace();
+			 return countedWords;
 		}
-		return null;
 	}
 	
 }

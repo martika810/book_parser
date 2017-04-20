@@ -6,5 +6,5 @@ import java.util.Map;
 public interface FileParser {
 	List<String> findSentences(String words);
 	String lastNotFullSentence();
-	Map<Integer,String> countWords();
+	MapCounter countWords();
 }

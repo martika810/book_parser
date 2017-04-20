@@ -1,7 +1,9 @@
 package com.madcoding.parser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class MapCounter {
 	private Map<String,Integer> countedWords;
@@ -21,6 +23,16 @@ public class MapCounter {
 			countedWords.put(cleanWord, 1);
 		}
 		
+	}
+	
+	public void addSentence(String sentence){
+		Stream<String> words = Arrays.stream(sentence.split(" "));
+		words.forEach(this::add);
+	}
+	
+	public void addSentence(Object sentence){
+		Stream<String> words = Arrays.stream(((String)sentence).split(" "));
+		words.forEach(this::add);
 	}
 	
 	public int getCount(String word){

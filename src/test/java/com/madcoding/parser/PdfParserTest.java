@@ -42,4 +42,17 @@ public class PdfParserTest {
 		// TO DO generate an html with <p> and <h6>
 		// count words
 	}
+	
+	@Test
+	public void testCountWords(){
+		FileSplitter splitter = new PdfFileSplitter();
+		List<String> splittedDocumentNames = splitter.splitDocument("./codigo_civil.pdf", 10);
+		
+		
+		FileParser parser = new PdfFileParser(splittedDocumentNames.get(0));
+			
+		MapCounter counter = parser.countWords();
+		assertTrue(counter.getCount("Decreto")>0);
+		
+	}
 }
