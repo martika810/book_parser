@@ -2,30 +2,40 @@ package com.madcoding.parser;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
 public class MapCounter {
+
 	private Map<WordCount,Integer> countedWords;
+	private Map<String,Integer> directAccessWords;
+
 	
 	private MapCounter(){
+
 		this.countedWords = new TreeMap<>();
+		this.directAccessWords = new HashMap<>();
 	}
 	private String cleanWord(String word){
 		return word.trim().toLowerCase();
 	}
+
 	public void add(String word){
 		String cleanWord = cleanWord(word);
-		if(countedWords.get(cleanWord)!=null){
-			Integer currentCount = countedWords.get(cleanWord) + 1;
-			countedWords.put(WordCount.of(cleanWord, currentCount), currentCount);
+		if(directAccessWords.get(cleanWord)!=null){
+			synchronized (directAccessWords) {
+				Integer currentCount = directAccessWords.get(cleanWord) + 1;
+				countedWords.put(WordCount.of(cleanWord, currentCount), currentCount);
+				directAccessWords.put(cleanWord,currentCount);
+			}
 		}else{
-			countedWords.put(WordCount.of(cleanWord, 1), 1);
+			synchronized(directAccessWords) {
+				countedWords.put(WordCount.of(cleanWord, 1), 1);
+				directAccessWords.put(cleanWord,1);
+			}
 		}
 		
 	}
@@ -35,33 +45,38 @@ public class MapCounter {
 		words.forEach(this::add);
 	}
 	
-	public void addSentence(Object sentence){
-		Stream<String> words = Arrays.stream(((String)sentence).split(" "));
-		words.forEach(this::add);
-	}
-	
+
+
 	public void add(final MapCounter another){
-		another.allWords().stream().parallel().forEach(word ->{
+
+		another.directAccessWords.keySet().stream().parallel().forEach(word ->{
 			int anotherCount = another.getCount(word);
-			if(countedWords.get(word)!=null){
-				int currentCount = getCount(word)+anotherCount;
-				countedWords.put(WordCount.of(word, currentCount), currentCount);
+			if(directAccessWords.get(word)!=null){
+				synchronized(countedWords) {
+					int currentCount = getCount(word) + anotherCount;
+					countedWords.put(WordCount.of(word, currentCount), currentCount);
+					directAccessWords.put(word,currentCount);
+				}
 			}else{
-				countedWords.put(WordCount.of(word,anotherCount),anotherCount);
+				synchronized (countedWords) {
+					countedWords.put(WordCount.of(word, anotherCount), anotherCount);
+					directAccessWords.put(word,anotherCount);
+				}
 			}
 		});
 	}
 	
-	public Set<WordCount> allWords(){
-		return new TreeSet<WordCount>(countedWords.keySet());
+	public Set<String> allWords(){
+
+		return new TreeSet<>(countedWords.keySet());
 	}
 	
 	public int getCount(String word){
 		String cleanWord = cleanWord(word);
-		if(null == countedWords.get(cleanWord)){
+		if(null == directAccessWords.get(cleanWord)){
 			return 0;
 		}else{
-			return countedWords.get(cleanWord);
+			return directAccessWords.get(cleanWord);
 		}
 	}
 	

@@ -56,10 +56,7 @@ public class PdfParserTest {
 			MapCounter acummulatorCounter = parser.countWords();
 			counter.add(acummulatorCounter);
 		}
-		
-			
-		
-		
+
 		try {
 			HtmlGenerator.saveOnFile(counter);
 		} catch (IOException e) {
@@ -69,8 +66,6 @@ public class PdfParserTest {
 		assertTrue(counter.getCount("Decreto")>0);
 		
 		splitter.clean();
-		
-		//splitter.clean();
 		
 	}
 }

@@ -1,6 +1,8 @@
 package com.madcoding.parser;
 
-public final class WordCount {
+import java.util.Comparator;
+
+public final class WordCount implements Comparable<WordCount> {
 	
 	private final String word;
 	private final int count;
@@ -49,7 +51,10 @@ public final class WordCount {
 			return false;
 		return true;
 	}
-	
-	
 
+
+	@Override
+	public int compareTo(WordCount another) {
+		return this.count() - another.count();
+	}
 }
