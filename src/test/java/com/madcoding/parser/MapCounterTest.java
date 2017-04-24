@@ -23,5 +23,21 @@ public class MapCounterTest {
 		assertEquals(0,counter.getCount("word3"));
 		
 	}
+	
+	@Test
+	public void testAddAnother(){
+		MapCounter counter = MapCounter.of();
+		counter.add("w1");
+		counter.add("w2");
+		
+		MapCounter counter2 = MapCounter.of();
+		counter2.add("w1");
+		counter2.add("w1");
+		counter2.add("w2");
+		
+		counter.add(counter2);
+		
+		assertEquals(3,counter.getCount("w1"));
+	}
 
 }

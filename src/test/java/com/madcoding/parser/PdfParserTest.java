@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.madcoding.docgenerator.HtmlGenerator;
+
 import static org.junit.Assert.*;
 import static thredds.inventory.CollectionUpdateType.test;
 
@@ -45,14 +47,30 @@ public class PdfParserTest {
 	
 	@Test
 	public void testCountWords(){
+		MapCounter counter = MapCounter.of();
 		FileSplitter splitter = new PdfFileSplitter();
-		List<String> splittedDocumentNames = splitter.splitDocument("./codigo_civil.pdf", 10);
+		List<String> splittedDocumentNames = splitter.splitDocument("./codigo_civil.pdf", 20);
 		
+		for(String fileName:splittedDocumentNames){
+			FileParser parser = new PdfFileParser(fileName);
+			MapCounter acummulatorCounter = parser.countWords();
+			counter.add(acummulatorCounter);
+		}
 		
-		FileParser parser = new PdfFileParser(splittedDocumentNames.get(0));
 			
-		MapCounter counter = parser.countWords();
+		
+		
+		try {
+			HtmlGenerator.saveOnFile(counter);
+		} catch (IOException e) {
+			e.printStackTrace();
+			e.printStackTrace();
+		}
 		assertTrue(counter.getCount("Decreto")>0);
+		
+		splitter.clean();
+		
+		//splitter.clean();
 		
 	}
 }

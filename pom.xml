@@ -11,6 +11,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+  	<j2html.version>0.7</j2html.version>
     <apache.tyka.version>1.14</apache.tyka.version>
     <apache.pdfbox.version>2.0.5</apache.pdfbox.version>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -19,14 +20,18 @@
   </properties>
 
   <dependencies>
- 
-<dependency>
-    <groupId>org.apache.pdfbox</groupId>
-    <artifactId>pdfbox</artifactId>
-    <version>${apache.pdfbox.version}</version>
-</dependency>
-  
-   <dependency>
+
+	<dependency>
+    	<groupId>com.j2html</groupId>
+    	<artifactId>j2html</artifactId>
+    	<version>${j2html.version}</version>
+	</dependency>
+  	<dependency>
+    	<groupId>org.apache.pdfbox</groupId>
+    	<artifactId>pdfbox</artifactId>
+    	<version>${apache.pdfbox.version}</version>
+	</dependency>
+  	<dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-parsers</artifactId>
       <version>${apache.tyka.version}</version>
