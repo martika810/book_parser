@@ -55,6 +55,6 @@ public final class WordCount implements Comparable<WordCount> {
 
 	@Override
 	public int compareTo(WordCount another) {
-		return this.count() - another.count();
+		return another.count() - this.count();
 	}
 }

@@ -2,42 +2,48 @@ package com.madcoding.parser;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MapCounter {
-
 	private Map<WordCount,Integer> countedWords;
 	private Map<String,Integer> directAccessWords;
 
 	
 	private MapCounter(){
-
 		this.countedWords = new TreeMap<>();
 		this.directAccessWords = new HashMap<>();
 	}
 	private String cleanWord(String word){
 		return word.trim().toLowerCase();
 	}
-
 	public void add(String word){
 		String cleanWord = cleanWord(word);
 		if(directAccessWords.get(cleanWord)!=null){
-			synchronized (directAccessWords) {
+			//synchronized (directAccessWords) {
 				Integer currentCount = directAccessWords.get(cleanWord) + 1;
+				countedWords.remove(WordCount.of(cleanWord, directAccessWords.get(cleanWord)));
 				countedWords.put(WordCount.of(cleanWord, currentCount), currentCount);
 				directAccessWords.put(cleanWord,currentCount);
-			}
+			//}
 		}else{
-			synchronized(directAccessWords) {
+			//synchronized(directAccessWords) {
 				countedWords.put(WordCount.of(cleanWord, 1), 1);
 				directAccessWords.put(cleanWord,1);
-			}
+			//}
 		}
 		
+	}
+	
+	public void add(String...words){
+		Arrays.stream(words).forEach(this::add);
 	}
 	
 	public void addSentence(String sentence){
@@ -45,8 +51,6 @@ public class MapCounter {
 		words.forEach(this::add);
 	}
 	
-
-
 	public void add(final MapCounter another){
 
 		another.directAccessWords.keySet().stream().parallel().forEach(word ->{
@@ -66,9 +70,9 @@ public class MapCounter {
 		});
 	}
 	
-	public Set<String> allWords(){
-
-		return new TreeSet<>(countedWords.keySet());
+	public List<String> allWords(){
+		List<String> sortedWords = countedWords.keySet().stream().map(w -> w.word()).collect(Collectors.toList());
+		return sortedWords;
 	}
 	
 	public int getCount(String word){

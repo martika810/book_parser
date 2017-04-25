@@ -2,6 +2,8 @@ package com.madcoding.parser;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 public class MapCounterTest {
@@ -38,6 +40,15 @@ public class MapCounterTest {
 		counter.add(counter2);
 		
 		assertEquals(3,counter.getCount("w1"));
+	}
+	
+	@Test
+	public void testAllWords(){
+		MapCounter counter = MapCounter.of();
+		counter.add("w1","w2","w2","w2","w2","w3","w3","w3","w3","w3","w3","w3");
+		
+		List<String> allWords = counter.allWords();
+		assertEquals(allWords.get(0),"w3");
 	}
 
 }
