@@ -1,6 +1,7 @@
 package com.madcoding.parser;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +19,7 @@ public class MapCounter {
 
 	
 	private MapCounter(){
-		this.countedWords = new TreeMap<>();
+		this.countedWords = new TreeMap<>((o1,o2) ->{return o1.count() - o2.count();});
 		this.directAccessWords = new HashMap<>();
 	}
 	private String cleanWord(String word){
@@ -28,10 +29,11 @@ public class MapCounter {
 		String cleanWord = cleanWord(word);
 		if(directAccessWords.get(cleanWord)!=null){
 			//synchronized (directAccessWords) {
-				Integer currentCount = directAccessWords.get(cleanWord) + 1;
-				countedWords.remove(WordCount.of(cleanWord, directAccessWords.get(cleanWord)));
-				countedWords.put(WordCount.of(cleanWord, currentCount), currentCount);
-				directAccessWords.put(cleanWord,currentCount);
+				Integer currentCount = directAccessWords.get(cleanWord);
+				Integer nextCount = currentCount + 1;
+				
+				countedWords.put(WordCount.of(cleanWord, currentCount), nextCount);
+				directAccessWords.put(cleanWord,nextCount);
 			//}
 		}else{
 			//synchronized(directAccessWords) {
@@ -73,6 +75,15 @@ public class MapCounter {
 	public List<String> allWords(){
 		List<String> sortedWords = countedWords.keySet().stream().map(w -> w.word()).collect(Collectors.toList());
 		return sortedWords;
+	}
+	
+	public int sizeCounted(){
+		
+		return countedWords.keySet().size();
+	}
+	
+	public int sizeDirect(){
+		return directAccessWords.keySet().size();
 	}
 	
 	public int getCount(String word){

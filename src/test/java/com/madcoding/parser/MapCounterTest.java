@@ -30,7 +30,9 @@ public class MapCounterTest {
 	public void testAddAnother(){
 		MapCounter counter = MapCounter.of();
 		counter.add("w1");
+		assertEquals(counter.sizeCounted(),counter.sizeDirect());
 		counter.add("w2");
+		assertEquals(counter.sizeCounted(),counter.sizeDirect());
 		
 		MapCounter counter2 = MapCounter.of();
 		counter2.add("w1");
@@ -48,6 +50,8 @@ public class MapCounterTest {
 		counter.add("w1","w2","w2","w2","w2","w3","w3","w3","w3","w3","w3","w3");
 		
 		List<String> allWords = counter.allWords();
+		System.out.println(allWords);
+		assertEquals(counter.sizeCounted(),counter.sizeDirect());
 		assertEquals(allWords.get(0),"w3");
 	}
 
