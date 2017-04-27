@@ -3,6 +3,9 @@ package com.madcoding.parser;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
@@ -53,6 +56,17 @@ public class MapCounterTest {
 		System.out.println(allWords);
 		assertEquals(counter.sizeCounted(),counter.sizeDirect());
 		assertEquals(allWords.get(0),"w3");
+	}
+	
+	@Test
+	public void testMapWithWordCount(){
+		Set<WordCount> sortedset = new TreeSet<>((o1,o2) -> {return o1.count()-(o2.count());});
+		WordCount w1 = WordCount.of("w1", 1);
+		WordCount w2 = WordCount.of("w2", 1);
+		map.put(w1, 1);
+		assertEquals(1, map.keySet().size());
+		map.put(w2, 1);
+		assertEquals(2, map.keySet().size());
 	}
 
 }

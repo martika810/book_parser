@@ -16,11 +16,14 @@ import java.util.stream.Stream;
 public class MapCounter {
 	private Map<WordCount,Integer> countedWords;
 	private Map<String,Integer> directAccessWords;
+	private Set<WordCount> sortedset;
 
 	
 	private MapCounter(){
 		this.countedWords = new TreeMap<>((o1,o2) ->{return o1.count() - o2.count();});
 		this.directAccessWords = new HashMap<>();
+		this.sortedset = new TreeSet<>((o1,o2) -> {return o1.count()-(o2.count());});
+	           
 	}
 	private String cleanWord(String word){
 		return word.trim().toLowerCase();
@@ -34,6 +37,7 @@ public class MapCounter {
 				
 				countedWords.put(WordCount.of(cleanWord, currentCount), nextCount);
 				directAccessWords.put(cleanWord,nextCount);
+				sortedset.add(WordCount.of(cleanWord, currentCount));
 			//}
 		}else{
 			//synchronized(directAccessWords) {
